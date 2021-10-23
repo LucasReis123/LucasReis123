@@ -1,9 +1,17 @@
+##LUCAS REIS DAS CHAGAS
+##202104991
+
 #include <stdio.h>
 #include <string.h>
 	
 	
 
-	
+	struct Contas{
+		char agencia[80];
+		int ndaConta;
+		char cliente[80];
+		float saldo;
+	};
 	
 	
 	void bem_Vindo(){ // Inicia o código
@@ -12,6 +20,7 @@
 		printf("C - Gerenciar Clientes\n");
 		printf("T - Gerenciar Contas\n");
 		printf("S - Sair\n");
+		printf("Observacao: Escreva em CAPS LOCK\n");
 	}
 
 	void gerenciarClientes(){
@@ -23,6 +32,7 @@
 		printf("A - Atualizar um cliente cadastrado\n");
 		printf("E - Excluir um cliente cadastrado\n");
 		printf("S - Sair\n");
+		printf("Observacao: Escreva em CAPS LOCK\n");
 	}
 	
 	void gerenciarContas(){
@@ -36,6 +46,7 @@
 		printf("T - Realizar transferencia entre contas\n");
 		printf("E - Exibir extrato de uma conta\n");
 		printf("S - Sair\n");
+		printf("Observacao: Escreva em CAPS LOCK\n");
 	}
 	
 	void cadastraCliente(){
@@ -72,7 +83,7 @@
 		leitura = fopen("Clientes.txt", "r");
 		
 		while(!feof(leitura)){
-			fscanf(leitura, "%s", texto);
+			fscanf(leitura, "%[^'\n']s", texto);
 			if((strcmp(texto, cpf) == 0) || (strcmp(texto, codigo) == 0)){
 				v = 1;
 				break;
@@ -764,17 +775,288 @@
 		return exclui;
 	}
 	
+	void contapCodigo(){
+		char codigo[80], texto[1000], texto2[1000], nome[80], res[50];
+		FILE *leitura;
+		FILE *arquivo;
+		int r = -1, i = 0, v = 0, v2 = 0, v3 = 0, v4 = 0, k = 0, cont = 0, a = 0, b[200];
+		
+		
+		system("cls");
+		printf("Por favor, digite o CODIGO do cliente:\n");
+		fflush(stdin);
+		scanf("%[^'\n']s", &codigo);
+		
+		leitura = fopen("Clientes.txt", "r");
+		
+		fscanf(leitura, "%[^'\n']s", texto2);
+		while(fgets(texto, 1000, leitura) != NULL){
+			if(strcmp(codigo, texto2) == 0){                           //COPIA A POSICAO DO NOME DO CLIENTE
+				r = i;
+				v = 1;
+			}
+			
+			i++;
+			fscanf(leitura, "%[^'\n']s", texto2);
+		}
+		fclose(leitura);
+		
+		r--;
+		i = 0;
+		leitura = fopen("Clientes.txt", "r");
+		
+		if(v != 0){
+			fscanf(leitura, "%[^'\n']s", texto2);
+			while(fgets(texto, 1000, leitura) != NULL){
+				if(r == i){
+					fflush(stdin);
+					strcpy(nome, texto2);                             //DESCOBRE O NOME DO CLIENTE
+				}
+				
+				fscanf(leitura, "%[^'\n']s", texto2);
+				i++;
+			}
+		}
+		
+		fclose(leitura);
+		system("cls");
+		
+		leitura = fopen("Contas.txt", "r");
+	
+	
+		struct Contas conta;
+		
+		if(v == 0){
+			printf("Cliente ainda nao cadastrado!\n");
+		}else if(v == 1){
+			printf("Por favor, %s, digite sua AGENCIA:\n", nome);
+			fflush(stdin);
+			scanf("%[^'\n']", &conta.agencia);
+			
+			printf("Por favor, %s, digite o NUMERO DA CONTA:\n", nome);
+			fflush(stdin);
+			scanf("%d", &conta.ndaConta);
+			itoa(conta.ndaConta, res, 10);
+			
+			conta.saldo = 0;			
+		}
+		
+		fscanf(leitura, "%[^'\n']s", texto2);
+		while(fgets(texto, 1000, leitura) != NULL){
+			k++;
+			
+			if(k%4 == 2){
+				if(strcmp(texto2, conta.agencia) == 0){
+					v2 = 1;
+					b[a] = cont + 1;
+					a++;
+				}
+				k = -2;
+			}
+			cont++;
+			
+			fscanf(leitura, "%[^'\n']s", texto2);
+		}
+		fclose(leitura);
+		
+	
+		
+		for(i = 0; i <= a; i++){
+			leitura = fopen("Contas.txt", "r");
+			k = 0;
+			fscanf(leitura, "%[^'\n']s", texto2);
+			while(fgets(texto, 1000, leitura) != NULL){
+			
+				if(k == b[i]){
+					if(strcmp(texto2, res) == 0){
+						v3 = 1;
+					}
+				}
+				k++;
+				fscanf(leitura, "%[^'\n']s", texto2);
+			}
+			fclose(leitura);
+		}
+		
+		
+		
+		if((v2 == 1) && (v3 == 1)){
+			v4 = 1;
+		}
+		
+	
+		if(v4 == 1){
+			printf("Conta ja existente!\n");
+		}else if((v == 1) && (v4 == 0)){
+			arquivo = fopen("Contas.txt", "a");
+			fprintf(arquivo, "%s\n", nome);
+			fprintf(arquivo, "%s\n", conta.agencia);
+			fprintf(arquivo, "%d\n", conta.ndaConta);
+			fprintf(arquivo, "%f\n", conta.saldo);
+			fclose(arquivo);
+		}
+		fclose(leitura);
+		system("pause");
+		
+	}
+	
+	void contapCpf(){
+		char cpf[80], texto[1000], texto2[1000], nome[80], res[50];
+		FILE *leitura;
+		FILE *arquivo;
+		int r = -1, i = 0, v = 0, v2 = 0, v3 = 0, v4 = 0, k = 0, cont = 0, a = 0, b[200];
+		
+		
+		system("cls");
+		printf("Por favor, digite o CPF/CNPJ do cliente:\n");
+		fflush(stdin);
+		scanf("%[^'\n']s", &cpf);
+		
+		leitura = fopen("Clientes.txt", "r");
+		
+		fscanf(leitura, "%[^'\n']s", texto2);
+		while(fgets(texto, 1000, leitura) != NULL){
+			if(strcmp(cpf, texto2) == 0){                           //COPIA A POSICAO DO NOME DO CLIENTE
+				r = i;
+				v = 1;
+			}
+			
+			i++;
+			fscanf(leitura, "%[^'\n']s", texto2);
+		}
+		fclose(leitura);
+		
+		r = r-2;
+		i = 0;
+		leitura = fopen("Clientes.txt", "r");
+		
+		if(v != 0){
+			fscanf(leitura, "%[^'\n']s", texto2);
+			while(fgets(texto, 1000, leitura) != NULL){
+				if(r == i){
+					fflush(stdin);
+					strcpy(nome, texto2);                             //DESCOBRE O NOME DO CLIENTE
+				}
+				
+				fscanf(leitura, "%[^'\n']s", texto2);
+				i++;
+			}
+		}
+		
+		fclose(leitura);
+		system("cls");
+		
+		leitura = fopen("Contas.txt", "r");
+	
+	
+		struct Contas conta;
+		
+		if(v == 0){
+			printf("Cliente ainda nao cadastrado!\n");
+		}else if(v == 1){
+			printf("Por favor, %s, digite sua AGENCIA:\n", nome);
+			fflush(stdin);
+			scanf("%[^'\n']", &conta.agencia);
+			
+			printf("Por favor, %s, digite o NUMERO DA CONTA:\n", nome);
+			fflush(stdin);
+			scanf("%d", &conta.ndaConta);
+			itoa(conta.ndaConta, res, 10);
+			
+			conta.saldo = 0;			
+		}
+		
+		fscanf(leitura, "%[^'\n']s", texto2);
+		while(fgets(texto, 1000, leitura) != NULL){
+			k++;
+			
+			if(k%4 == 2){
+				if(strcmp(texto2, conta.agencia) == 0){
+					v2 = 1;
+					b[a] = cont + 1;
+					a++;
+				}
+				k = -2;
+			}
+			cont++;
+			
+			fscanf(leitura, "%[^'\n']s", texto2);
+		}
+		fclose(leitura);
+		
+	
+		
+		for(i = 0; i <= a; i++){
+			leitura = fopen("Contas.txt", "r");
+			k = 0;
+			fscanf(leitura, "%[^'\n']s", texto2);
+			while(fgets(texto, 1000, leitura) != NULL){
+			
+				if(k == b[i]){
+					if(strcmp(texto2, res) == 0){
+						v3 = 1;
+					}
+				}
+				k++;
+				fscanf(leitura, "%[^'\n']s", texto2);
+			}
+			fclose(leitura);
+		}
+		
+		
+		
+		if((v2 == 1) && (v3 == 1)){
+			v4 = 1;
+		}
+		
+	
+		if(v4 == 1){
+			printf("Conta ja existente!\n");
+		}else if((v == 1) && (v4 == 0)){
+			arquivo = fopen("Contas.txt", "a");
+			fprintf(arquivo, "%s\n", nome);
+			fprintf(arquivo, "%s\n", conta.agencia);
+			fprintf(arquivo, "%d\n", conta.ndaConta);
+			fprintf(arquivo, "%f\n", conta.saldo);
+			fclose(arquivo);
+		}
+		fclose(leitura);
+		system("pause");
+		
+	}
+	
+	void cadastraConta(){
+		int i;
+		
+		printf("Deseja buscar o cliente atraves de:\n");
+		printf("1 - CODIGO\n");
+		printf("2 - CPF/CNPJ\n");
+		fflush(stdin);
+		scanf("%d", &i);
+		if(i == 1){
+			contapCodigo();
+		}else if(i == 2){
+			contapCpf();
+		}else{
+			system("cls");
+			printf("Numero nao compreendido\n");
+			cadastraConta();
+		}
+	}
 
 //-------------------------------------------------------------------------------------------------------------------------------------
 int main(){
-	char *leitor;
+	char leitor;
 	int contClientes = 0, contContas = 0, contTransacoes = 0, i;
 	FILE *arquivo;
 	arquivo = fopen("Clientes.txt", "w");
 	fclose(arquivo);
+	arquivo = fopen("Contas.txt", "w");
+	fclose(arquivo);
 	 
 	 
-	for(i = 0; (contClientes < 100) || (contContas < 200) || (contTransacoes < 1000); i++){
+	for(i = 0; leitor != 'S'; i++){
+		system("cls");
 		fflush(stdin);
 		bem_Vindo();                           // Início da execução
 
@@ -814,6 +1096,8 @@ int main(){
 			system("cls");
 			if(leitor == 'S'){
 				break;                            // Finalisa o código
+			}else if(leitor == 'C'){
+				cadastraConta();
 			}
 		}
 		
